@@ -5,12 +5,15 @@ import (
 )
 
 const (
+	CACHE_MEMORY = iota
+	CACHE_FILE
+
 	DEFAULT_TTL = 3600000
 )
 
 type Cacher interface {
 	Get(string) []byte
-	Set(string, interface{}, int64) error
+	Set(string, []byte, int64) error
 	Flush() error
 	Keys() []string
 }
@@ -31,7 +34,19 @@ type file struct {
 }
 
 type fmap struct {
-	desc map[*os.FileInfo]*file
+	desc map[os.FileInfo]*file
+}
+
+func NewCache(ctype int) Cacher {
+	switch ctype {
+	case CACHE_MEMORY:
+		return NewMmap()
+	case CACHE_FILE:
+		return NewFmap()
+	default:
+		return nil
+	}
+	return nil
 }
 
 //TODO

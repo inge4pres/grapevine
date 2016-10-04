@@ -25,8 +25,9 @@ func (m mmap) Set(key string, cont []byte, ttl int64) error {
 	return nil
 }
 
-func (m mmap) Flush() {
+func (m mmap) Flush() error {
 	m.desc = make(map[string]*mem, 0)
+	return nil
 }
 
 func (m mmap) Keys() []string {
