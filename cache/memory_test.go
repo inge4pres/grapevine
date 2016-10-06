@@ -4,6 +4,7 @@ import (
 	"testing"
 )
 
+// table-driven tests ftw
 var test = []byte("A reasonable test content, a reasonable test result!")
 var objs = []struct {
 	key  string
@@ -18,10 +19,6 @@ var objs = []struct {
 var mm = NewMmap()
 
 func TestSet(t *testing.T) {
-	//	if err := mm.Set("tk-1", test, DEFAULT_TTL); err != nil {
-	//		t.Error(err)
-	//	}
-	// table drive tests ftw
 	for _, o := range objs {
 		if err := mm.Set(o.key, o.cont, o.ttl); err != nil {
 			t.Errorf("Set() failed for %v %v %v", o.key, o.cont, o.ttl)
@@ -39,5 +36,7 @@ func TestGet(t *testing.T) {
 }
 
 func TestKeys(t *testing.T) {
-
+	if len(mm.Keys()) != len(objs) {
+		t.Errorf("Lenght of keys differ from table tests, want %d have %d", len(objs), len(mm.Keys()))
+	}
 }

@@ -2,6 +2,7 @@ package cache
 
 import (
 	"os"
+	"time"
 )
 
 const (
@@ -16,25 +17,8 @@ type Cacher interface {
 	Set(string, []byte, int64) error
 	Flush() error
 	Keys() []string
-}
-
-type mem struct {
-	ttl  int64
-	data []byte
-}
-
-type mmap struct {
-	//TODO dd namespace to maps!
-	desc map[string]*mem
-}
-
-type file struct {
-	ttl  int64
-	data []byte
-}
-
-type fmap struct {
-	desc map[os.FileInfo]*file
+	//TODO
+	expire()
 }
 
 func NewCache(ctype int) Cacher {
@@ -47,6 +31,27 @@ func NewCache(ctype int) Cacher {
 		return nil
 	}
 	return nil
+}
+
+type mem struct {
+	start time.Time
+	ttl   int64
+	data  []byte
+}
+
+type mmap struct {
+	//TODO dd namespace to maps!
+	desc map[string]*mem
+}
+
+type file struct {
+	start time.Time
+	ttl   int64
+	data  []byte
+}
+
+type fmap struct {
+	desc map[os.FileInfo]*file
 }
 
 //TODO
